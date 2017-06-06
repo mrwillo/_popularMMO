@@ -16,9 +16,69 @@ app.get("/api/home", function(req, res){
 			{
 				name:"Lucky Block Hunger Games",
 				numberOfVideo: 67,
-				listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg?custom=true&w=196&h=110&stc=true&jpg444=true&jpgq=90&sp=68&sigh=v5Dd0u_pHDkobZt1ohtKNxOaQy0",
+				listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
 				listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
-			}
+			},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				},
+				{
+					name:"Lucky Block Hunger Games",
+					numberOfVideo: 67,
+					listBanner:"https://i.ytimg.com/vi/yi2ZIEm4Hog/hqdefault.jpg",
+					listID:"PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq"
+				}
 			]
 		}
 	}
