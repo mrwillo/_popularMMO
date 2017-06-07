@@ -18,3 +18,12 @@ module.exports = {
         return _db;
     }
 };
+/**
+ * DB structure:
+ * example of popularMMO
+ * collection:
+ *  playlist:[{channelID:"popularMMO"}], videos:[{playlistID:<playListID from youtube>},{}]
+ * example of newChannel
+ * collection:
+ * playlist:[{channelID:"popularMMO"}], videos:[{playlistID:<playListID from youtube>},{}]
+ */
