@@ -1,7 +1,7 @@
 var commonService = require('../commons/commonService');
 var mongoUtil = require('../commons/mongoUtil');
 
-var homeAPI = function(req, res) {
+var home = function(req, res) {
 	if ( !commonService.isValidHeader(req) ) {
 		res.send({"error":"hey, you don't have access to this api. sorry!"});
 		return;
@@ -81,7 +81,7 @@ var homeAPI = function(req, res) {
 	
 	res.send(homeObj);
 }
-var videosOfPlaylistAPI = function(req, res) {
+var videosOfPlaylist = function(req, res) {
 	if ( !commonService.isValidHeader(req) ) {
 		res.send({"error":"hey, you don't have access to this api. sorry!"});
 		return;
@@ -91,7 +91,8 @@ var videosOfPlaylistAPI = function(req, res) {
 		return;
 	}
 	
-	var videos = [{
+	var videos = [
+		{
 		videoId: "uVQZzQRRS1w",
 		videoBanner: "https://i.ytimg.com/vi/uVQZzQRRS1w/sddefault.jpg?custom=true&w=246&h=138&stc=true&jpg444=true&jpgq=90&sp=68&sigh=jC5xOYuXZ6-BY5NPOvje04NltN4",
 		playTime: "4:21",
@@ -157,35 +158,51 @@ var processLikeVideo = function (req, res, isDislike) {
 		res.send({"error":"hey, you don't have access to this api. sorry!"});
 		return;
 	}
+	console.log(req.body);
 	var videoObj = req.body;
-	if (videoObj) {
+	if (videoObj.videoId === undefined || videoObj === null || videoObj === "") {
 		res.send({error:"video id is missing"});
 		return;
 	}
 	var db = mongoUtil.getDb();
-	db.collection("videos").findOne({id:videoObj.id,playlistID:videoObj.playListID},function (err, item) {
+	db.collection("videos").findOne(
+		{ videoId: videoObj.videoId,
+			playlistID: videoObj.playlistID },//condition
+		function (err, item) {
+		console.log(item);
 		if (!item) {
 			res.send({error:"Video id not video not found to like/dislike"});
 			return;
 		}
 		if (isDislike) {
-			db.collection("videos").update({id: videoObj.id}, {$set: {appDislikes: item.appDislikes+1}}, {w: 1}, function (err, result) {
-				console.log('updated, from origin:' + item.appLikes + "decrease 1: " + result);
+			db.collection("videos").update({videoId: videoObj.videoId}, {$set: {appDislike: item.appDislike+1}}, {w: 1}, function (err, result) {
+				console.log('updated, from origin:' + item.appDislike + "decrease 1: " + result);
 			});
 			res.send({"success":"dislike video successfully"});
 			return;
 		} else {
-			db.collection("videos").update({id: videoObj.id}, {$set: {appLikes: item.appLikes + 1}}, {w: 1}, function (err, result) {
-				console.log('updated, from origin:' + item.appLikes + "increased 1: " + result);
+			db.collection("videos").update({videoId: videoObj.videoId}, {$set: {appLike: item.appLike+1}}, {w: 1}, function (err, result) {
+				console.log('updated, from origin:' + item.appLike + "increased 1: " + result);
 			});
 			res.send({"success":"like video successfully"});
 		}
 		
 	});
 }
+var getWebsiteList = function(req, res) {
+	if ( !commonService.isValidHeader(req) ) {
+		res.send({"error":"hey, you don't have access to this api. sorry!"});
+		return;
+	}
+	var arrWebsite = [
+		'http://cartoonforkid.org/'
+	]
+	res.send({data:arrWebsite});
+}
 module.exports = {
-	homeAPI: homeAPI,
+	homeAPI: home,
 	likeAPI: likeVideo,
 	dislikeAPI: dislikeVideo,
-	videosOfPlaylistAPI: videosOfPlaylistAPI
+	videosOfPlaylistAPI: videosOfPlaylist,
+	getWebsiteListAPI: getWebsiteList
 }
