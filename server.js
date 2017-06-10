@@ -3,6 +3,10 @@ var express = require('express');
 var app = express();
 var mongoUtil = require('./commons/mongoUtil');
 var popularMMOAPI = require('./api/popularMMOAPI')
+var cheerio = require('cheerio');
+var request = require('request');
+var htmlParser = require('./commons/tubeHtmlParser');
+var fs = require('fs');
 
 app.use(express.bodyParser());
 
@@ -12,6 +16,28 @@ app.get("/popularMMO/api/playlist/videos", popularMMOAPI.videosOfPlaylistAPI)
 app.put("/popularMMO/api/like", popularMMOAPI.likeAPI)
 app.put("/popularMMO/api/dislike", popularMMOAPI.dislikeAPI)
 app.get("/popularMMO/api/listWebsite", popularMMOAPI.getWebsiteListAPI)
+var catchedData
+app.get("/parseListItem", function(req, res){
+	catchedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test.html").toString();
+	var $ = cheerio.load(catchedData);
+	var result = htmlParser.parseListItem($.root());
+	res.send(result);
+});
+app.get("/parsingData", function(req, res) {
+	request("https://www.youtube.com/user/PopularMMOs/playlists", function(err, response, html){
+		var $ = cheerio.load(html);
+		var arr = [];
+		$('#channels-browse-content-grid').children().each(function(index, el){
+			var listItem = htmlParser.parseListItem($(this));
+			arr.push(listItem);
+		});
+		res.send(arr);
+	})
+})
+
+
+
+
 app.get("/onlyMe/testData", function(req, res){
 	var db = mongoUtil.getDb();
 	var objInsert = {
