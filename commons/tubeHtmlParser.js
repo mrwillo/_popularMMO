@@ -27,7 +27,8 @@ var parseVideoOfPlaylist = function(trObj) {
 	var videoTitle = trObj.find(".pl-video-title").find("a");
 	videoObj.videoTitle = videoTitle.text();
 	videoObj.videoId = videoTitle.attr("href").split("?v=")[1].substring(0,11);
-	videoObj.videoTime = trObj.find(".pl-video-time").find('.more-menu-wrapper').find(".timestamp").find('span').text();
+	videoObj.playTime = trObj.find(".pl-video-time").find('.more-menu-wrapper').find(".timestamp").find('span').text();
+	videoObj.videoBanner = trObj.find(".pl-video-thumbnail").find('span').find("a").find("span").filter(".yt-thumb-clip").find("img").attr('src').split("?")[0];
 	
 	return videoObj;
 }
