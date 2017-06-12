@@ -25,10 +25,11 @@ var parseListInfo = function(listDetailsObj) {
 var parseVideoOfPlaylist = function(trObj) {
 	var videoObj = {};
 	var videoTitle = trObj.find(".pl-video-title").find("a");
-	videoObj.videoTitle = videoTitle.text();
+	videoObj.videoTitle = videoTitle.text().trim();
 	videoObj.videoId = videoTitle.attr("href").split("?v=")[1].substring(0,11);
 	videoObj.playTime = trObj.find(".pl-video-time").find('.more-menu-wrapper').find(".timestamp").find('span').text();
-	videoObj.videoBanner = trObj.find(".pl-video-thumbnail").find('span').find("a").find("span").filter(".yt-thumb-clip").find("img").attr('src').split("?")[0];
+	videoObj.videoBanner = trObj.find(".pl-video-thumbnail").find('span').find("a").find("span")
+													.filter(".yt-thumb-clip").find("img").attr('src').split("?")[0];
 	
 	return videoObj;
 }
