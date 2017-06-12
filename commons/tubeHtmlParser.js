@@ -22,7 +22,7 @@ var parseListInfo = function(listDetailsObj) {
 	playlistInfo.lastUpdatedDate = liDetails.eq(3).html();
 	return playlistInfo;
 }
-var parseVideoOfPlaylis t = function(trObj) {
+var parseVideoOfPlaylist = function(trObj) {
 	var videoObj = {};
 	var videoTitle = trObj.find(".pl-video-title").find("a");
 	videoObj.videoTitle = videoTitle.text();
