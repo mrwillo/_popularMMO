@@ -18,11 +18,22 @@ app.put("/popularMMO/api/dislike", popularMMOAPI.dislikeAPI)
 app.get("/popularMMO/api/listWebsite", popularMMOAPI.getWebsiteListAPI)
 var catchedData
 app.get("/parseListItem", function(req, res){
-	catchedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test.html").toString();
+	catchedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlist_test.html").toString();
 	var $ = cheerio.load(catchedData);
 	var result = htmlParser.parseListItem($.root());
 	res.send(result);
 });
+app.get("/parseListDetail", function(req, res){
+	catchedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlistDetails.html").toString();
+	var $ = cheerio.load(catchedData);
+	var playlistInfo = htmlParser.parseListInfo($("div[id=pl-header]"));
+	var videos = [];
+	$("#pl-load-more-destination").children().each(function(index, el){
+		var video =htmlParser.parseVideoOfPlaylist($(this));
+		videos.push(video);
+	});
+	res.send({info:playlistInfo, videos: videos});
+})
 app.get("/parsingData", function(req, res) {
 	request("https://www.youtube.com/user/PopularMMOs/playlists", function(err, response, html){
 		var $ = cheerio.load(html);

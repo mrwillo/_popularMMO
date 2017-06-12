@@ -15,6 +15,24 @@ var parseListItem = function(listItemObj) {
 	}
 	return listItem;
 }
+var parseListInfo = function(listDetailsObj) {
+	var playlistInfo = {};
+	var liDetails = listDetailsObj.find(".pl-header-content").find("ul[class='pl-header-details']").children();
+	playlistInfo.numberOfViews = liDetails.eq(2).html().split(" views")[0];
+	playlistInfo.lastUpdatedDate = liDetails.eq(3).html();
+	return playlistInfo;
+}
+var parseVideoOfPlaylis t = function(trObj) {
+	var videoObj = {};
+	var videoTitle = trObj.find(".pl-video-title").find("a");
+	videoObj.videoTitle = videoTitle.text();
+	videoObj.videoId = videoTitle.attr("href").split("?v=")[1].substring(0,11);
+	videoObj.videoTime = trObj.find(".pl-video-time").find('.more-menu-wrapper').find(".timestamp").find('span').text();
+	
+	return videoObj;
+}
 module.exports  = {
-	parseListItem: parseListItem
+	parseListItem: parseListItem,
+	parseListInfo: parseListInfo,
+	parseVideoOfPlaylist: parseVideoOfPlaylist
 }
