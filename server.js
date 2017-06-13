@@ -16,20 +16,35 @@ app.get("/popularMMO/api/playlist/videos", popularMMOAPI.videosOfPlaylistAPI)
 app.put("/popularMMO/api/like", popularMMOAPI.likeAPI)
 app.put("/popularMMO/api/dislike", popularMMOAPI.dislikeAPI)
 app.get("/popularMMO/api/listWebsite", popularMMOAPI.getWebsiteListAPI)
-var catchedData
+var cachedData
 app.get("/parseListItem", function(req, res){
-	catchedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlist_test.html").toString();
-	var $ = cheerio.load(catchedData);
+	cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlist_test.html").toString();
+	var $ = cheerio.load(cachedData);
 	var result = htmlParser.parseListItem($.root());
 	res.send(result);
 });
+app.get("/parseVideoMeta", function(req, res){
+	//url: https://www.youtube.com/watch?v=K5I_6CpBNKI
+	cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/video_detail_meta.html").toString();
+	var $ = cheerio.load(cachedData);
+	var videoObj = htmlParser.parseVideoDetail($.root());
+	res.send(videoObj);
+});
+app.get("/parseVideoDes", function(req, res){
+	//url: https://www.youtube.com/watch?v=K5I_6CpBNKI
+	cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/video_detail_des.html").toString();
+	var $ = cheerio.load(cachedData);
+	var videoObj = htmlParser.parseVideoDetail($('#action-panel-details'));
+	res.send(videoObj)
+});
 app.get("/parseListDetail", function(req, res){
-	catchedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlistDetails.html").toString();
-	var $ = cheerio.load(catchedData);
+	cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlistDetails.html").toString();
+	var $ = cheerio.load(cachedData);
 	var playlistInfo = htmlParser.parseListInfo($("div[id=pl-header]"));
 	var videos = [];
+	var playlistID='testPlaylistID';
 	$("#pl-load-more-destination").children().each(function(index, el){
-		var video =htmlParser.parseVideoOfPlaylist($(this));
+		var video =htmlParser.parseVideoOfPlaylist($(this), playlistID);
 		videos.push(video);
 	});
 	res.send({info:playlistInfo, videos: videos});
@@ -39,7 +54,7 @@ app.get("/parsingData", function(req, res) {
 		var $ = cheerio.load(html);
 		var arr = [];
 		$('#channels-browse-content-grid').children().each(function(index, el){
-			var listItem = htmlParser.parseListItem($(this));
+			var listItem = htmlParser.parseListItem($(this), "popularMMO");
 			arr.push(listItem);
 		});
 		res.send(arr);
