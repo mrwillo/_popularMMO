@@ -36,6 +36,7 @@ var updateOne = function(collectionName, objFindConditions, objUpdate) {
 				});
 			}
 		})
+	
 }
 
 var insertOnePlaylist = function(playlistObj, channelID) {

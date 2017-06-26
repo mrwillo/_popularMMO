@@ -11,6 +11,7 @@ var htmlParser = require('./commons/tubeHtmlParser');
 var dataProcessor = require("./commons/tubeDataProcessor");
 var fs = require('fs');
 var jobs = require("./jobs/playlistUpdateJob")
+var commonService = require('./commons/commonService');
 
 app.use(express.bodyParser());
 
@@ -63,6 +64,10 @@ app.get("/parseListDetail", function (req, res) {
 	});
 })
 app.get("/input/manual/getChannelPlaylist", function (req, res) {
+	if (!commonService.isValidMeOnly(req)) {
+		res.send({error: "Only me used! don't touch it"});
+		return;
+	};
 	var uri = "https://www.youtube.com/user/PopularMMOs/playlists";
 	var headers ={
 		"accept-language":"en-US,en;q=0.8"

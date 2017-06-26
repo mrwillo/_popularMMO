@@ -6,7 +6,6 @@ var home = function(req, res) {
 		res.send({"error":"hey, you don't have access to this api. sorry!"});
 		return;
 	}
-		var bannerUrl='https://yt3.ggpht.com/tYGki5tVXShlciDDg9cAsMn6HkrfHQujnUrm6G0ZophW56Pg9A3wdsWq4N8tl1-pPfNNfFMdHg=w1060-fcrop64=1,00005a57ffffa5a8-nd-c0xffffffff-rj-k-no'
 		var homeObj = {
 			homeDetail: {
 				name:"Lucky Block Hunger Games",
@@ -84,6 +83,7 @@ var home = function(req, res) {
 				}
 			]
 		}
+	var db = mongoUtil.getDb();
 	
 	res.send(homeObj);
 }
