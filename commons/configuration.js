@@ -1,4 +1,6 @@
 var popularMMO = "popularMMO";
 module.exports = {
-	popularMMO: popularMMO
+	channels: {
+		popularMMO: popularMMO
+	}
 }

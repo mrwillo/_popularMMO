@@ -15,12 +15,11 @@ var parseListItem = function(listItemObj) {
 	}
 	return listItem;
 }
-var parseListInfo = function(listDetailsObj, channelName) {
+var parseListInfo = function(listDetailsObj) {
 	var playlistInfo = {};
 	var liDetails = listDetailsObj.find(".pl-header-content").find("ul[class='pl-header-details']").children();
 	playlistInfo.numberOfViews = liDetails.eq(2).html().split(" views")[0].replace(/,/g,"");;
 	playlistInfo.lastUpdatedDate = liDetails.eq(3).html();
-	playlistInfo.channelName = channelName;
 	return playlistInfo;
 }
 var parseVideoOfPlaylist = function(trObj, playlistID) {
@@ -39,24 +38,33 @@ var parseVideoOfPlaylist = function(trObj, playlistID) {
 	// }
 	var videoObj = {};
 	var videoTitle = trObj.find(".pl-video-title").find("a");
-	videoObj.videoTitle = videoTitle.text().trim();
+	videoObj.videoTitle = videoTitle.filter(".pl-video-title-link").text().trim();
 	videoObj.videoId = videoTitle.attr("href").split("?v=")[1].substring(0,11);
 	videoObj.playTime = trObj.find(".pl-video-time").find('.more-menu-wrapper').find(".timestamp").find('span').text();
 	videoObj.videoBanner = trObj.find(".pl-video-thumbnail").find('span').find("a").find("span")
-													.filter(".yt-thumb-clip").find("img").attr('src').split("?")[0];
+													.filter(".yt-thumb-clip").find("img").attr('data-thumb').split("?")[0];
 	videoObj.playlistID = playlistID;
+	
+	videoObj.views=0;
+	videoObj.description="";
+	videoObj.like=0;
+	videoObj.appLike=0;
+	videoObj.dislike=0;
+	videoObj.appDislike=0;
 	
 	return videoObj;
 }
 var parseVideoDetail = function(cVideoObj) {
 	var vObj = {};
 	vObj.views = cVideoObj.find('#watch-header').find('.watch-view-count').text().split(" views")[0].replace(/,/g,"");
-	vObj.like = cVideoObj.find('#watch8-sentiment-actions').find('.like-button-renderer').children().first().find('span').filter('.yt-uix-button-content').text();
-	vObj.dislike = cVideoObj.find('#watch8-sentiment-actions').find('.like-button-renderer').children().eq(2).find('span').filter('.yt-uix-button-content').text();
+	vObj.like = cVideoObj.find('#watch8-sentiment-actions').find('.like-button-renderer').children().first().find('span')
+		.filter('.yt-uix-button-content').text().split("Sign")[0].replace(/,/g,"");
+	vObj.dislike = cVideoObj.find('#watch8-sentiment-actions').find('.like-button-renderer').children().eq(2).find('span')
+		.filter('.yt-uix-button-content').text().split("Sign")[0].replace(/,/g,"");
 	vObj.publishOn = cVideoObj.find('#watch-description').find('#watch-uploader-info').find('strong').text();
 	vObj.description = cVideoObj.find('#watch-description').find('#watch-description-text').find('p').text();
 	return vObj;
-}
+};
 module.exports  = {
 	parseListItem: parseListItem,
 	parseListInfo: parseListInfo,

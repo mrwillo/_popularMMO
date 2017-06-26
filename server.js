@@ -3,9 +3,11 @@ var express = require('express');
 var app = express();
 var mongoUtil = require('./commons/mongoUtil');
 var popularMMOAPI = require('./api/popularMMOAPI')
+var conf = require("./commons/configuration");
 var cheerio = require('cheerio');
 var request = require('request');
 var htmlParser = require('./commons/tubeHtmlParser');
+var dataProcessor = require("./commons/tubeDataProcessor");
 var fs = require('fs');
 var jobs = require("./jobs/playlistUpdateJob")
 
@@ -18,7 +20,7 @@ app.put("/popularMMO/api/like", popularMMOAPI.likeAPI)
 app.put("/popularMMO/api/dislike", popularMMOAPI.dislikeAPI)
 app.get("/popularMMO/api/listWebsite", popularMMOAPI.getWebsiteListAPI)
 var cachedData
-app.get("/input/manual/getChannelPlaylist", function (req, res) {
+app.get("/input/manual/getPlaylistInfo", function (req, res) {//don't need
 	cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlist_test.html").toString();
 	var $ = cheerio.load(cachedData);
 	var result = htmlParser.parseListItem($.root());
@@ -39,28 +41,70 @@ app.get("/parseVideoDes", function (req, res) {
 	res.send(videoObj)
 });
 app.get("/parseListDetail", function (req, res) {
-	cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlistDetails.html").toString();
-	var $ = cheerio.load(cachedData);
-	var playlistInfo = htmlParser.parseListInfo($("div[id=pl-header]"));
-	var videos = [];
-	var playlistID = 'testPlaylistID';
-	$("#pl-load-more-destination").children().each(function (index, el) {
-		var video = htmlParser.parseVideoOfPlaylist($(this), playlistID);
-		videos.push(video);
+	// cachedData = fs.readFileSync("/Users/willo/workspace/_popularMMO/test_data/playlistDetails.html").toString();
+	// var $ = cheerio.load(cachedData);
+	var viewOnePlaylistUri = "https://www.youtube.com/playlist?list=PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq";
+	var headers ={
+		"accept-language":"en-US,en;q=0.8"
+	}
+	request({uri: viewOnePlaylistUri, headers: headers}, function(err, response, html){
+		$ = cheerio.load(html);
+		var playlistInfo = htmlParser.parseListInfo($("div[id=pl-header]"));
+		var videos = [];
+		var playlistID = 'PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq';
+		$("#pl-load-more-destination").children().each(function (index, el) {
+			var video = htmlParser.parseVideoOfPlaylist($(this), playlistID);
+			dataProcessor.insertOneVideo(video);
+			videos.push(video);
+		});
+		
+		res.send({info: playlistInfo, videos: videos});
 	});
-	res.send({info: playlistInfo, videos: videos});
 })
-app.get("/parsingData", function (req, res) {
-	request("https://www.youtube.com/user/PopularMMOs/playlists", function (err, response, html) {
+app.get("/input/manual/getChannelPlaylist", function (req, res) {
+	var uri = "https://www.youtube.com/user/PopularMMOs/playlists";
+	var headers ={
+		"accept-language":"en-US,en;q=0.8"
+	}
+	request({uri:uri,headers:headers}, function (err, response, html) {
 		var $ = cheerio.load(html);
 		var arr = [];
 		$('#channels-browse-content-grid').children().each(function (index, el) {
 			var listItem = htmlParser.parseListItem($(this), "popularMMO");
-			arr.push(listItem);
+			//each channel, need to parse details to build channel object and insert db
+			//1 parse detail
+			var viewOnePlaylistUri = "https://www.youtube.com/playlist?list=PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq";
+			request({uri:viewOnePlaylistUri, headers:headers}, function(err1, response1, html1) {
+				var $1 = cheerio.load(html1);
+				
+				var playlistInfo = htmlParser.parseListInfo($1("div[id=pl-header]"));
+				listItem.numberOfViews = playlistInfo.numberOfViews;
+				listItem.lastUpdatedDate = playlistInfo.lastUpdatedDate;
+				dataProcessor.insertOnePlaylist(listItem, conf.channels.popularMMO);
+				
+				var playlistID = listItem.playlistID;
+				$("#pl-load-more-destination").children().each(function (index, el) {
+					var video = htmlParser.parseVideoOfPlaylist($1(this), playlistID);
+					dataProcessor.insertOneVideo(video);
+				});
+			});
 		});
-		res.send(arr);
+		res.send("check db pls");
 	})
-})
+});
+
+app.get("/popularMMO/api/requestUpdateVideoInfo", function(req, res){
+	var videoId = req.query.videoId;
+	var uriDetail = "https://www.youtube.com/watch?v="+videoId;
+	var headers ={
+		"accept-language":"en-US,en;q=0.8"
+	}
+	request({uri: uriDetail, headers: headers}, function(err, response, html){
+		var $ = cheerio.load(html);
+		var videoMeta = htmlParser.parseVideoDetail($("div[id=watch7-content]"));
+		res.send(dataProcessor.updateVideoMetaInfo(videoMeta, videoId));
+	});
+});
 
 
 app.get("/onlyMe/testData", function (req, res) {

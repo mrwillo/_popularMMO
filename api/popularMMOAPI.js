@@ -175,7 +175,6 @@ var processLikeVideo = function (req, res, isDislike) {
 		{ videoId: videoObj.videoId,
 			playlistID: videoObj.playlistID },//condition
 		function (err, item) {
-		console.log(item);
 		if (!item) {
 			res.send({error:"Video id not video not found to like/dislike"});
 			return;
