@@ -18,7 +18,7 @@ var parseListItem = function(listItemObj) {
 var parseListInfo = function(listDetailsObj, channelName) {
 	var playlistInfo = {};
 	var liDetails = listDetailsObj.find(".pl-header-content").find("ul[class='pl-header-details']").children();
-	playlistInfo.numberOfViews = liDetails.eq(2).html().split(" views")[0];
+	playlistInfo.numberOfViews = liDetails.eq(2).html().split(" views")[0].replace(/,/g,"");;
 	playlistInfo.lastUpdatedDate = liDetails.eq(3).html();
 	playlistInfo.channelName = channelName;
 	return playlistInfo;
