@@ -1,6 +1,7 @@
 require('http').globalAgent.maxSockets = Infinity
 var express = require('express');
 var app = express();
+var sleep = require('sleep');
 var mongoUtil = require('./commons/mongoUtil');
 var popularMMOAPI = require('./api/popularMMOAPI')
 var conf = require("./commons/configuration");
@@ -73,8 +74,9 @@ app.get("/input/manual/getChannelPlaylist", function (req, res) {
 			var listItem = htmlParser.parseListItem($(this), "popularMMO");
 			//each channel, need to parse details to build channel object and insert db
 			//1 parse detail
-			var viewOnePlaylistUri = "https://www.youtube.com/playlist?list=PL6p1NYDZ87wIR3Gkbvf5NlvgUPJBNXarq";
+			var viewOnePlaylistUri = "https://www.youtube.com/playlist?list="+listItem.playlistID;
 			request({uri:viewOnePlaylistUri, headers:headers}, function(err1, response1, html1) {
+				console.log("Start inserting data for playlistID: "+ listItem.playlistID);
 				var $1 = cheerio.load(html1);
 				
 				var playlistInfo = htmlParser.parseListInfo($1("div[id=pl-header]"));
@@ -83,11 +85,13 @@ app.get("/input/manual/getChannelPlaylist", function (req, res) {
 				dataProcessor.insertOnePlaylist(listItem, conf.channels.popularMMO);
 				
 				var playlistID = listItem.playlistID;
-				$("#pl-load-more-destination").children().each(function (index, el) {
+				$1("#pl-load-more-destination").children().each(function (index, el) {
 					var video = htmlParser.parseVideoOfPlaylist($1(this), playlistID);
 					dataProcessor.insertOneVideo(video);
 				});
+				console.log("End inserting data for playlistID: "+ listItem.playlistID);
 			});
+			sleep.sleep(5);
 		});
 		res.send("check db pls");
 	})

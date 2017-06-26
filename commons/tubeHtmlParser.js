@@ -7,7 +7,8 @@ var parseListItem = function(listItemObj) {
 	var listItem = {};
 	try {
 		listItem.playlistID = listItemObj.find("a").attr('href').split("list=")[1];
-		listItem.bannerUrl = listItemObj.find("a").find('span').filter('.yt-thumb-clip').find('img').attr('src').split("?custom")[0];
+		listItem.bannerUrl = listItemObj.find("a").find('span').filter('.yt-thumb-clip').find('img').attr('src')
+			.split("?custom")[0].replace("hqdefault.jpg", "maxresdefault.jpg");
 		listItem.numberOfVideo = listItemObj.find("a").find('span').filter(".formatted-video-count-label").find("b").text();
 		listItem.playlistTitle = listItemObj.find("div[class='yt-lockup-content']").find("h3").find('a').text();
 	}catch (ex) {
@@ -42,7 +43,7 @@ var parseVideoOfPlaylist = function(trObj, playlistID) {
 	videoObj.videoId = videoTitle.attr("href").split("?v=")[1].substring(0,11);
 	videoObj.playTime = trObj.find(".pl-video-time").find('.more-menu-wrapper').find(".timestamp").find('span').text();
 	videoObj.videoBanner = trObj.find(".pl-video-thumbnail").find('span').find("a").find("span")
-													.filter(".yt-thumb-clip").find("img").attr('data-thumb').split("?")[0];
+													.filter(".yt-thumb-clip").find("img").attr('data-thumb').split("?")[0].replace("hqdefault.jpg", "maxresdefault.jpg");
 	videoObj.playlistID = playlistID;
 	
 	videoObj.views=0;
