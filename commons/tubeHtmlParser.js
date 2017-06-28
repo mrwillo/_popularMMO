@@ -8,7 +8,7 @@ var parseListItem = function(listItemObj) {
 	try {
 		listItem.playlistID = listItemObj.find("a").attr('href').split("list=")[1];
 		listItem.bannerUrl = listItemObj.find("a").find('span').filter('.yt-thumb-clip').find('img').attr('src')
-			.split("?custom")[0].replace("hqdefault.jpg", "maxresdefault.jpg");
+			.split(".jpg")[0].replace("hqdefault", "maxresdefault.jpg");
 		listItem.numberOfVideo = listItemObj.find("a").find('span').filter(".formatted-video-count-label").find("b").text();
 		listItem.playlistTitle = listItemObj.find("div[class='yt-lockup-content']").find("h3").find('a').text();
 	}catch (ex) {
